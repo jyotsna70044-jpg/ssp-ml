@@ -1,0 +1,9 @@
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - |
+      dvc pull
+      python src/train.py
+      python src/drift.py
+      python src/promote.py

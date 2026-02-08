@@ -1,0 +1,6 @@
+train:
+  max_iter: 200
+
+promotion:
+  min_accuracy_gain: 0.01
+  max_psi: 0.2
