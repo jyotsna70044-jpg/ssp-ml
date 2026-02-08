@@ -10,7 +10,7 @@ from sklearn.metrics import accuracy_score
 mlflow.set_tracking_uri(os.environ["MLFLOW_TRACKING_URI"])
 mlflow.set_experiment("dvc-mlflow-demo")
 
-params = yaml.safe_load(open("params.yaml"))
+params = yaml.safe_load(open("../params.yaml"))
 
 df = pd.read_csv("data/raw.csv")
 X = df.drop("target", axis=1)
@@ -29,7 +29,7 @@ with mlflow.start_run():
     mlflow.log_metric("accuracy", acc)
     mlflow.log_params(params["train"])
 
-    os.makedirs("models", exist_ok=True)
+    os.makedirs("../models", exist_ok=True)
     with open("models/model.pkl", "wb") as f:
         pickle.dump(model, f)
 

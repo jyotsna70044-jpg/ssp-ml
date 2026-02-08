@@ -1,0 +1,49 @@
+#name: MLflow CI/CD Pipeline
+#
+#on:
+#  push:
+#    branches: [ main ]
+#
+#jobs:
+#  train-and-log:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v3
+#
+#      - name: Set up Python
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: '3.9'
+#
+#      - name: Install Dependencies
+#        run: |
+#          pip install mlflow boto3 awscli scikit-learn
+#          # Add any other project-specific dependencies
+#
+#      - name: Configure AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v2
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: us-east-1  # Change to your EC2 region
+#
+#      - name: Train and Log to MLflow
+#        env:
+#          MLFLOW_TRACKING_URI: http://${{ secrets.EC2_PUBLIC_IP }}:5000
+#          # Ensure your EC2 security group allows port 5000 from GitHub Runner IPs
+#        run: |
+#          python train.py
+#
+#      - name: Execute Remote Command via SSH
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.EC2_HOST }}
+#          username: ec2-user
+#          key: ${{ secrets.EC2_SSH_KEY }}
+#          script: |
+#            cd /home/ubuntu/app
+#            git pull origin main
+#            source venv/bin/activate
+#            export MLFLOW_TRACKING_URI="http://localhost:5000"
+#            python 01_train.py
